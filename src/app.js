@@ -7,6 +7,9 @@ import bodyParser from 'body-parser';
 import methodOverride from 'method-override';
 import mongoose from 'mongoose';
 import restify from 'express-restify-mongoose';
+import jwt from 'jsonwebtoken';
+import expressJwt from 'express-jwt';
+
 import routes from './routes';
 import userModel from './models/userModel';
 
@@ -29,7 +32,13 @@ app.post('/api/v1/auth/signup', (req, res) => {
 });
 
 app.post('/api/v1/auth/signin', (req, res) => {
-  res.json({ signin: 'ok' });
+  const token = jwt.sign({ signin: true }, process.env.JWT_SECRET);
+  res.json({ signin: 'ok', apiToken: token });
+});
+
+app.get('/api/v1/protected', expressJwt({ secret: process.env.JWT_SECRET }), (req, res) => {
+  if (!req.user.signin) return res.sendStatus(401);
+  res.sendStatus(200);
 });
 
 const router = express.Router();
