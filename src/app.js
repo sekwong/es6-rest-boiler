@@ -16,8 +16,8 @@ app.use(
   }),
 );
 
-const router = express.Router();
 Object.keys(routes).forEach((routeName) => {
+  const router = express.Router();
   routes[routeName].default(router);
   app.use(`/api/${changeCase.paramCase(routeName)}`, router);
 });
