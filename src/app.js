@@ -9,6 +9,7 @@ import mongoose from 'mongoose';
 import restify from 'express-restify-mongoose';
 import jwt from 'jsonwebtoken';
 import expressJwt from 'express-jwt';
+import expressListRoutes from 'express-list-routes';
 
 import routes from './routes';
 import userModel from './models/userModel';
@@ -48,8 +49,9 @@ app.use(router);
 
 Object.keys(routes).forEach((routeName) => {
   const customerRouter = express.Router();
-  routes[routeName].default(router);
+  routes[routeName].default(customerRouter);
   app.use(`/api/${changeCase.paramCase(routeName)}`, customerRouter);
 });
 
+expressListRoutes({ prefix: '/api/v1' }, 'API:', router);
 export default app;
